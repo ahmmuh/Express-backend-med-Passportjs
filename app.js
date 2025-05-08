@@ -1,35 +1,43 @@
 import dotenv from "dotenv";
-dotenv.config();
-import express from "express";
 import passport from "passport";
 import session from "express-session";
+import cors from "cors";
+dotenv.config();
+import express from "express";
 import { configurePassport } from "./config-passport/passportConfig.js";
 import authRoute from "./routes/authRoute.js";
 import bookRoute from "./routes/bookRoute.js";
 import { getConnection } from "./database/db.js";
 import userRoute from "./routes/userRoute.js";
 import mongoose from "mongoose";
-
 const app = express();
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
 //Passport setup
 
-console.log("Mongo URI:", process.env.CONNECTION_STRING); // ska inte vara undefined
+// console.log("Mongo URI:", process.env.CONNECTION_STRING); // ska inte vara undefined
 
-await mongoose.connect(process.env.CONNECTION_STRING);
+// await mongoose.connect(process.env.CONNECTION_STRING);
 
+//Session
 app.use(
   session({
     secret: process.env.SECRET,
     resave: true,
     saveUninitialized: true,
-    cookie: { secure: true },
+    cookie: { secure: false, sameSite: "lax" }, // byt till true om du ska använda HTTPS
   })
 );
 
 app.use(passport.initialize());
+app.use(passport.session());
 configurePassport(passport);
 
 //Auth Route

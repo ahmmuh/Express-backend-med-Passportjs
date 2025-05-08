@@ -1,3 +1,4 @@
+import { isAuthenticated } from "../middlewares/authMiddleware.js";
 import {
   deleteUser,
   getUser,
@@ -9,10 +10,10 @@ import express from "express";
 
 const userRoute = express.Router();
 
+userRoute.delete("/users/:userId", isAuthenticated, deleteUser);
+userRoute.get("/users/:userId", isAuthenticated, getUser);
+userRoute.patch("/users/:userId", isAuthenticated, updateUser);
+userRoute.get("/users", isAuthenticated, getUsers);
 userRoute.post("/users", registerUser);
-userRoute.delete("/users/:userId", deleteUser);
-userRoute.get("/users/:userId", getUser);
-userRoute.patch("/users/:userId", updateUser);
-userRoute.get("/users", getUsers);
 
 export default userRoute;

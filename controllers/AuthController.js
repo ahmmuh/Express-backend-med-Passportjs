@@ -16,7 +16,10 @@ export const loginUser = async (req, res, next) => {
 //Utloggning
 
 export const logoutUser = (req, res) => {
-  req.logout(() => {
-    return res.status(201).json({ message: "Logged out" });
+  req.logout((error) => {
+    if (error) {
+      return res.status(500).json({ message: "Kunnde inte logga ut" });
+    }
+    return res.status(201).json({ message: "Utloggad" });
   });
 };

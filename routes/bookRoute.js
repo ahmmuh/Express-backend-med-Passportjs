@@ -1,3 +1,4 @@
+import { isAuthenticated } from "../middlewares/authMiddleware.js";
 import {
   deleteBook,
   getBook,
@@ -9,9 +10,9 @@ import express from "express";
 
 const bookRoute = express.Router();
 
-bookRoute.get("/books/:bookId", getBook);
-bookRoute.patch("/books/:bookId", updateBook);
-bookRoute.delete("/books/:bookId", deleteBook);
-bookRoute.get("/books", getBooks);
+bookRoute.get("/books/:bookId", isAuthenticated, getBook);
+bookRoute.patch("/books/:bookId", isAuthenticated, updateBook);
+bookRoute.delete("/books/:bookId", isAuthenticated, deleteBook);
+bookRoute.get("/books", isAuthenticated, getBooks);
 
 export default bookRoute;

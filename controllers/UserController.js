@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import bcrypt from "bcrypt";
 
 //Registrera nya användare
 
@@ -9,16 +10,19 @@ export const registerUser = async (req, res) => {
   }
 
   try {
-    const existingUser = await User.findOne();
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "Användaren finns redan" });
     }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
     const newUser = new User({
       firstName,
       lastName,
       userName,
       email,
-      password,
+      password: hashedPassword,
     });
     await newUser.save();
     console.log("NY användare har registrerats", newUser);

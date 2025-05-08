@@ -17,6 +17,7 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+//Validera nya lösenord med det sparade lösenord i databasen
 userSchema.methods.isValidPassword = function (password) {
   return bcrypt.compare(password, this.password);
 };

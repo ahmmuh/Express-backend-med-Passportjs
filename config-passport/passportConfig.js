@@ -3,7 +3,13 @@ import { Strategy as LocalStrategy } from "passport-local";
 
 export const configurePassport = (passport) => {
   passport.use(
-    new LocalStrategy({ usernameField: "userName" }, findUserInfo())
+    new LocalStrategy(
+      {
+        usernameField: "userName",
+        passwordField: "password",
+      },
+      findUserInfo()
+    )
   );
 
   passport.serializeUser((user, done) => {
@@ -27,7 +33,7 @@ const findUserInfo = () => {
       const user = await User.findOne({ userName });
       if (!user) return done(null, false, { message: "Incorrect userName" });
 
-      const isMatch = await user.comparePassword(password);
+      const isMatch = await user.isValidPassword(password);
       if (!isMatch) return done(null, false, { message: "Incorrect password" });
 
       return done(null, user);
