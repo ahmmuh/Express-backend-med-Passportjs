@@ -23,3 +23,9 @@ export const logoutUser = (req, res) => {
     return res.status(201).json({ message: "Utloggad" });
   });
 };
+
+// Visa inloggade användare
+
+export const getCurrentUser = (req, res) => {
+  return res.status(200).json({ user: req.user });
+};
