@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
 import passport from "passport";
+import mongoose from "mongoose";
+import User from "./models/User.js";
 import session from "express-session";
 import cors from "cors";
 dotenv.config();
@@ -9,7 +11,6 @@ import authRoute from "./routes/authRoute.js";
 import bookRoute from "./routes/bookRoute.js";
 import { getConnection } from "./database/db.js";
 import userRoute from "./routes/userRoute.js";
-import mongoose from "mongoose";
 const app = express();
 app.use(
   cors({

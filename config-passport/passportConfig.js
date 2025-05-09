@@ -5,15 +5,31 @@ export const configurePassport = (passport) => {
   passport.use(
     new LocalStrategy(
       {
-        usernameField: "userName",
+        usernameField: "username", // matchar fältet du använder i databasen
         passwordField: "password",
       },
-      findUserInfo()
+      async (username, password, done) => {
+        try {
+          const user = await User.findOne({ username });
+          if (!user) {
+            return done(null, false, { message: "Incorrect username" });
+          }
+
+          const isMatch = await user.isValidPassword(password);
+          if (!isMatch) {
+            return done(null, false, { message: "Incorrect password" });
+          }
+
+          return done(null, user);
+        } catch (err) {
+          return done(err);
+        }
+      }
     )
   );
 
   passport.serializeUser((user, done) => {
-    return done(null, user._id);
+    done(null, user._id);
   });
 
   passport.deserializeUser(async (id, done) => {
@@ -24,21 +40,4 @@ export const configurePassport = (passport) => {
       done(error);
     }
   });
-};
-
-//Find user info
-const findUserInfo = () => {
-  return async (userName, password, done) => {
-    try {
-      const user = await User.findOne({ userName });
-      if (!user) return done(null, false, { message: "Incorrect userName" });
-
-      const isMatch = await user.isValidPassword(password);
-      if (!isMatch) return done(null, false, { message: "Incorrect password" });
-
-      return done(null, user);
-    } catch (err) {
-      return done(err);
-    }
-  };
 };
