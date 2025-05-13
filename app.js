@@ -2,9 +2,9 @@ import dotenv from "dotenv";
 import passport from "passport";
 import mongoose from "mongoose";
 import User from "./models/User.js";
-import session from "express-session";
 import cors from "cors";
 dotenv.config();
+import session from "express-session";
 import express from "express";
 import { configurePassport } from "./config-passport/passportConfig.js";
 import authRoute from "./routes/authRoute.js";
@@ -31,8 +31,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
     secret: process.env.SECRET,
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     cookie: { secure: false, sameSite: "lax" }, // byt till true om du ska använda HTTPS
   })
 );

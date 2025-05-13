@@ -6,9 +6,19 @@ export const loginUser = async (req, res, next) => {
   passport.authenticate("local", (error, user, info) => {
     if (error) return next(error);
     if (!user) return res.status(401).json({ message: info.message });
+
     req.logIn(user, (error) => {
       if (error) return next(error);
-      return res.status(201).json({ message: "Inloggningen lyckades" });
+
+      // ✅ Skicka tillbaka användaren i svaret så frontend vet att det lyckades
+      return res.status(200).json({
+        message: "Inloggningen lyckades",
+        user: {
+          _id: user._id,
+          username: user.username,
+          email: user.email, // eller andra fält du vill returnera
+        },
+      });
     });
   })(req, res, next);
 };
@@ -27,5 +37,9 @@ export const logoutUser = (req, res) => {
 // Visa inloggade användare
 
 export const getCurrentUser = (req, res) => {
-  return res.status(200).json({ user: req.user });
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ message: "Inte inloggad" });
+  }
+
+  res.json(req.user);
 };

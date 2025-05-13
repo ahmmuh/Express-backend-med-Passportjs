@@ -16,4 +16,5 @@ userRoute.patch("/users/:userId", isAuthenticated, updateUser);
 userRoute.get("/users", isAuthenticated, getUsers);
 userRoute.post("/users", registerUser);
 
+
 export default userRoute;

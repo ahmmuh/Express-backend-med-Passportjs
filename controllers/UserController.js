@@ -70,7 +70,14 @@ export const updateUser = async (req, res) => {
       .json({ message: "Det finns inga user med detta ID" });
   }
   try {
-    const updatedUser = await User.findByIdAndUpdate(userId, req.body);
+    const updatedUser = await User.findByIdAndUpdate(userId, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!updatedUser) {
+      return res.status(404).json({ message: "Användare hittades inte" });
+    }
+
     return res
       .status(200)
       .json({ message: "User har uppdaterats", updatedUser: updatedUser });
